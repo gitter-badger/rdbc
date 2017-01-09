@@ -53,7 +53,7 @@ lazy val rdbcRoot = (project in file("."))
     publishArtifact := false,
     bintrayReleaseOnPublish := false
   )
-  .aggregate(rdbcApiScala, rdbcApiJava, rdbcImplBase, rdbcTypeconv, rdbcUtil)
+  .aggregate(rdbcApiScala, rdbcApiJava, rdbcImplBase, rdbcTypeconv, rdbcUtil, rdbcJavaWrappers)
 
 lazy val rdbcApiScala = (project in file("rdbc-api-scala"))
   .settings(commonSettings: _*)
@@ -72,13 +72,19 @@ lazy val rdbcApiJava = (project in file("rdbc-api-java"))
   .settings(commonSettings: _*)
   .settings(
     name := "rdbc-api-java",
-    crossPaths := false,
-    publishArtifact := scalaVersion.value.startsWith("2.12"),
-    bintrayReleaseOnPublish := publishArtifact.value,
     libraryDependencies ++= Vector(
       Library.reactiveStreams
     )
-  )
+  ).dependsOn(rdbcApiScala)
+
+lazy val rdbcJavaWrappers = (project in file("rdbc-java-wrappers"))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "rdbc-java-wrappers",
+    libraryDependencies ++= Vector(
+      Library.java8Compat
+    )
+  ).dependsOn(rdbcApiJava)
 
 lazy val rdbcImplBase = (project in file("rdbc-implbase"))
   .settings(commonSettings: _*)

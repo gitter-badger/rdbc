@@ -14,30 +14,14 @@
  * limitations under the License.
  */
 
-package io.rdbc
+package io.rdbc.javawrappers
 
-import io.rdbc.sapi.TypeConverterRegistry
+import io.rdbc.{japi, sapi}
 
-package object typeconv {
+class TypeConverterWrapper[T](underlying: sapi.TypeConverter[T])
+  extends japi.TypeConverter[T] {
 
-  val BuiltInConverters: TypeConverterRegistry = {
-    TypeConverterRegistry(
-      BigDecimalConverter,
-      BoolConverter,
-      ByteConverter,
-      CharConverter,
-      DoubleConverter,
-      FloatConverter,
-      InstantConverter,
-      IntConverter,
-      LocalDateConverter,
-      LocalDateTimeConverter,
-      LocalTimeConverter,
-      LongConverter,
-      ShortConverter,
-      StringConverter,
-      UuidConverter
-    )
-  }
+  def getCls: Class[T] = underlying.cls
 
+  def fromObj(obj: Object): T = underlying.fromAny(obj)
 }
